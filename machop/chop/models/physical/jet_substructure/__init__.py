@@ -81,7 +81,34 @@ class JSC_S(nn.Module):
             x = l(x)
         return x
 
+class JSC_Toy_Lab_1(nn.Module):
+    def __init__(self, info):
+        super(JSC_Toy_Lab_1, self).__init__()
+        self.seq_blocks = nn.Sequential(
+            # 1st LogicNets Layer
+            nn.BatchNorm1d(16),
+            nn.ReLU(),
+            nn.Linear(16, 64),  
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            # 2nd
+            nn.Linear(64, 64),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            # 3rd
+            nn.Linear(64, 32),  
+            nn.BatchNorm1d(32),
+            nn.ReLU(),
+            # 4th
+            nn.Linear(32, 5),  
+            nn.BatchNorm1d(5),
+            nn.ReLU(5),
+        )
 
+    def forward(self, x):
+        return self.seq_blocks(x)
+
+    
 # Getters ------------------------------------------------------------------------------
 def get_jsc_toy(info):
     # TODO: Tanh is not supported by mase yet
@@ -94,3 +121,6 @@ def get_jsc_tiny(info):
 
 def get_jsc_s(info):
     return JSC_S(info)
+
+def get_jsc_lab_1(info):
+    return JSC_Toy_Lab_1(info)
