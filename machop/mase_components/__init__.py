@@ -4,8 +4,11 @@ import os
 
 def get_modules():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    return [
+    mods = [
         d
         for d in os.listdir(current_dir)
         if os.path.isdir(os.path.join(current_dir, d))
     ]
+    if "__pycache__" in mods:
+        mods.remove("__pycache__")
+    return mods

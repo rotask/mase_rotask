@@ -49,10 +49,10 @@ class GraphSearchSpaceMixedPrecisionPTQ(SearchSpaceBase):
         # Ensure 'mg' is defined in all cases
         if self.mg is None:
             assert self.model_info.is_fx_traceable, "Model must be fx traceable"
-            self.mg = MaseGraph(self.model)
-            self.mg, _ = init_metadata_analysis_pass(self.mg, None)
-            self.mg, _ = add_common_metadata_analysis_pass(
-                self.mg, {"dummy_in": self.dummy_input}
+            mg = MaseGraph(self.model)
+            mg, _ = init_metadata_analysis_pass(mg, None)
+            mg, _ = add_common_metadata_analysis_pass(
+                mg, {"dummy_in": self.dummy_input, "force_device_meta": False}
             )
 
         # Use 'self.mg' directly instead of assigning it to 'mg'
