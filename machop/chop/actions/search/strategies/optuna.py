@@ -41,7 +41,7 @@ class SearchStrategyOptuna(SearchStrategyBase):
         else:
             self.direction = self.config["setup"]["direction"]
 
-    def sampler_map(self, name):
+    def sampler_map(self, name, search_space):
         match name.lower():
             case "random":
                 sampler = optuna.samplers.RandomSampler()
@@ -53,6 +53,8 @@ class SearchStrategyOptuna(SearchStrategyBase):
                 sampler = optuna.samplers.NSGAIIISampler()
             case "qmc":
                 sampler = optuna.samplers.QMCSampler()
+            case "bruteforce":
+                sampler = optuna.samplers.BruteForceSampler()
             case _:
                 raise ValueError(f"Unknown sampler name: {name}")
         return sampler
@@ -119,7 +121,7 @@ class SearchStrategyOptuna(SearchStrategyBase):
 
     def search(self, search_space) -> optuna.study.Study:
         study_kwargs = {
-            "sampler": self.sampler_map(self.config["setup"]["sampler"]),
+            "sampler": self.sampler_map(self.config["setup"]["sampler"], search_space=search_space),
         }
         if not self.sum_scaled_metrics:
             study_kwargs["directions"] = self.directions
@@ -151,7 +153,7 @@ class SearchStrategyOptuna(SearchStrategyBase):
         self._save_study(study, self.save_dir / "study.pkl")
         self._save_search_dataframe(study, search_space, self.save_dir / "log.json")
         self._save_best(study, self.save_dir / "best.json")
-
+        
         return study
 
     @staticmethod

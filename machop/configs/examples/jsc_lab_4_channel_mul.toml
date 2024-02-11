@@ -1,13 +1,13 @@
 # basics
-model = "jsc-tiny"
+model = "jsc-toy-lab-1"
 dataset = "jsc"
 task = "cls"
 
 max_epochs = 5
-batch_size = 512
+batch_size = 256
 learning_rate = 1e-2
 accelerator = "cpu"
-project = "jsc-tiny"
+project = "jsc-toy-lab-4-question-2"
 seed = 42
 log_every_n_steps = 5
 # load_name = "../mase_output/toy_toy_tiny/software/training_ckpts/best.ckpt"
@@ -48,16 +48,20 @@ bias_frac_width = ["NA"]
 
 [search.search_space.seed.seq_blocks_2.config]
 # if search.search_space.setup.by = "name", this seed will be used to quantize the mase graph node with name "seq_blocks_2"
-name = ["integer"]
-data_in_width = [4, 8]
-data_in_frac_width = ["NA"]
-weight_width = [2, 4, 8]
-weight_frac_width = ["NA"]
-bias_width = [2, 4, 8]
-bias_frac_width = ["NA"]
+name = ["output_only"]
+channel_multiplier = [2, 4, 8, 16, 32]  # "NA" means channel_multiplier = 1
+
+[search.search_space.seed.seq_blocks_3.config]
+# if search.search_space.setup.by = "name", this seed will be used to quantize the mase graph node with name "seq_blocks_2"
+name = ["both"]
+channel_multiplier = [2, 4, 8, 16, 32] 
+
+[search.search_space.seed.seq_blocks_4.config]
+# if search.search_space.setup.by = "name", this seed will be used to quantize the mase graph node with name "seq_blocks_2"
+name = ["both"]
+channel_multiplier = [2, 4, 8, 16, 32] 
 
 [search.strategy]
-
 name = "optuna"
 eval_mode = true
 
@@ -72,8 +76,7 @@ compare_to = 32 # compare to FP32
 n_jobs = 1
 n_trials = 20
 timeout = 20000
-sampler = "bruteforce"
-#sampler = "tpe"
+sampler = "tpe"
 # sum_scaled_metrics = true # single objective
 # direction = "maximize"
 sum_scaled_metrics = false # multi objective
